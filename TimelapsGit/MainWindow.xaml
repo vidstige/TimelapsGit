@@ -12,20 +12,18 @@
             <Slider Minimum="1" Maximum="{Binding Commits.Count}" Value="{Binding SelectedCommitNumber}"></Slider>
         </StackPanel>
         
-        <ListBox x:Name="_lines" ItemsSource="{Binding Lines}">
+        <ListBox x:Name="_lines" ItemsSource="{Binding Lines}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="local:LineAndCommit" >
-                    <Grid Background="{Binding BackgroundColor}" HorizontalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80" />
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical">
+                <DataTemplate DataType="local:LineAndCommit">
+                    <DockPanel Background="{Binding BackgroundColor}">
+                        <StackPanel DockPanel.Dock="Left" Width="Auto" Orientation="Vertical">
                             <TextBlock FontSize="10" Text="{Binding Commit.Author.Name}" />
                             <TextBlock FontSize="10" Text="{Binding Commit.CommitDate.LocalDateTime}" />
                         </StackPanel>
-                        <TextBlock Grid.Column="1" FontSize="18" Text="{Binding Line}" />
-                    </Grid>
+                        
+                        <TextBlock FontSize="18" Text="{Binding Line}"/>
+                        
+                    </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
