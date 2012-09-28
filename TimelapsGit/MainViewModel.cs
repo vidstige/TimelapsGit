@@ -59,6 +59,7 @@ namespace TimelapsGit
             get { return _path; }
         }
 
+        // TODO: This method already exists in the Text class...
         private string GetLine(Encoding encoding, RawText text, int n)
         {
             if (n == text.LineStartIndices.size() - 1) return string.Empty;
