@@ -60,9 +60,9 @@ namespace TimelapsGit
         {
             set
             {
-                _path = value;
+                _path = value.Replace('\\', '/');
 
-                _commits = _repository.CurrentBranch.CurrentCommit.Ancestors.Select(c => new CommitViewModel(c)).ToList();
+                _commits = _repository.CurrentBranch.CurrentCommit.Ancestors.Where(c => c.Changes.Any(change => change.Path == _path)).Select(c => new CommitViewModel(c)).ToList();
                 RaisePropertyChanged("Commits");
 
                 SelectedCommitNumber = 1;
