@@ -13,8 +13,8 @@ namespace TimelapsGit
         {
             InitializeComponent();
 
-            var repo = new Repository(@"F:\src\Bugsense.WPF");
-            DataContext = new MainViewModel(repo) { File = @"Bugsense.WPF/Bugsense.WPF.csproj" };
+            var repo = new Repository(@"F:\src\eliteprospects");
+            DataContext = new MainViewModel(repo) { File = @"AndroidManifest.xml" };
         }
     }
 }

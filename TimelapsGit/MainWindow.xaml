@@ -1,7 +1,14 @@
 ﻿<Window x:Class="TimelapsGit.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:TimelapsGit"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <DataTemplate DataType="local:LineAndCommit">
+            
+                <TextBlock Grid.Column="1" Text="{Binding Line}" />
+            
+        </DataTemplate>
+    </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Top">
             <TextBlock Text="{Binding CurrentMessage}" />
@@ -9,11 +16,11 @@
         </StackPanel>
         
         <StackPanel DockPanel.Dock="Bottom">
-            <Slider Minimum="0" Maximum="{Binding NumberOfChanges}" Value="{Binding SelectedCommitNumber}"></Slider>
+            <Slider Minimum="1" Maximum="{Binding Commits.Count}" Value="{Binding SelectedCommitNumber}"></Slider>
         </StackPanel>
         
         <ListBox x:Name="_lines" ItemsSource="{Binding Lines}">
-            
+           
         </ListBox>
         
     </DockPanel>

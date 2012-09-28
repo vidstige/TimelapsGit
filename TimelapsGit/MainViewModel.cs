@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using GitSharp;
@@ -10,38 +9,23 @@ using GitSharp.Core.Util;
 
 namespace TimelapsGit
 {
-    public class LineAndCommit
-    {
-        private readonly string _line;
-        private readonly Commit _commit;
-
-        public LineAndCommit(string line, Commit commit)
-        {
-            _line = line;
-            _commit = commit;
-        }
-
-        public string Line { get { return _line; } }
-        public Commit Commit { get { return _commit; } }
-    }
-
-    public class MainViewModel: INotifyPropertyChanged
+    public class MainViewModel: ViewModel
     {
         private readonly Repository _repository;
-        private readonly ObservableCollection<string> _lines = new ObservableCollection<string>();
-        private int _selectedCommitNumber;
+        private ObservableCollection<LineAndCommit> _lines = new ObservableCollection<LineAndCommit>();
+        private List<CommitViewModel> _commits = new List<CommitViewModel>();
+        private int _selectedCommitNumber = 1;
 
-        private List<LineAndCommit> _commits;
         private string _path;
 
         public MainViewModel(Repository repository)
         {
             _repository = repository;
         }
-
-        public int NumberOfChanges
+        
+        public List<CommitViewModel> Commits
         {
-            get { return _commits.Count-1; }
+            get { return _commits; }
         }
 
         public int SelectedCommitNumber
@@ -55,37 +39,22 @@ namespace TimelapsGit
             }
         }
 
-        public LineAndCommit Selected
-        {
-            get { return _commits[_commits.Count - _selectedCommitNumber - 1]; }
-        }
-
         public string CurrentMessage
         {
-            get { return Selected.Commit.Message; }
+            get { return _commits[_selectedCommitNumber-1].Commit.Message; }
         }
-
-        private void RaisePropertyChanged(string propertyName)
-        {
-            var tmp = PropertyChanged;
-            if (tmp != null) tmp(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        
         public string File
         {
             set
             {
                 _path = value;
-                _commits = Blame(_repository.CurrentBranch.CurrentCommit, _path).ToList();
 
-                _lines.Clear();
-                foreach (var commit in _commits)
-                {
-                    _lines.Add(commit.Commit.CommitDate +" "+  commit.Line);
-                }
-                
-                RaisePropertyChanged("NumberOfChanges");
-                SelectedCommitNumber = _commits.Count - 1;
+                _commits = _repository.CurrentBranch.CurrentCommit.Ancestors.Select(c => new CommitViewModel(c)).ToList();
+
+                Lines = new ObservableCollection<LineAndCommit>(Blame(_repository.CurrentBranch.CurrentCommit, _path));
+
+                RaisePropertyChanged("Commits");
             }
             get { return _path; }
         }
@@ -148,17 +117,26 @@ namespace TimelapsGit
             return lines;
         }
 
-        public ObservableCollection<string> Lines
+        public ObservableCollection<LineAndCommit> Lines
         {
             get { return _lines; }
+            private set
+            {
+                _lines = value;
+                RaisePropertyChanged("Lines");
+            }
         }
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    public class CommitViewModel: ViewModel
+    {
+        private readonly Commit _commit;
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public CommitViewModel(Commit commit)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            _commit = commit;
         }
+
+        public Commit Commit { get { return _commit; } }
     }
 }
