@@ -14,7 +14,7 @@ namespace TimelapsGit
             InitializeComponent();
 
             var repo = new Repository(@"F:\src\eliteprospects");
-            DataContext = new MainViewModel(repo) { File = @"AndroidManifest.xml" };
+            DataContext = new MainViewModel(repo, DateTime.Now) { File = @"AndroidManifest.xml" };
         }
     }
 }

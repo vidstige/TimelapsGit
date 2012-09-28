@@ -14,14 +14,17 @@
         
         <ListBox x:Name="_lines" ItemsSource="{Binding Lines}">
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="local:LineAndCommit">
-                    <Grid>
+                <DataTemplate DataType="local:LineAndCommit" >
+                    <Grid Background="{Binding BackgroundColor}" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80" />
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Commit.Author.Name}" />
-                        <TextBlock Grid.Column="1" Text="{Binding Line}" />
+                        <StackPanel Grid.Column="0" Orientation="Vertical">
+                            <TextBlock FontSize="10" Text="{Binding Commit.Author.Name}" />
+                            <TextBlock FontSize="10" Text="{Binding Commit.CommitDate.LocalDateTime}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" FontSize="18" Text="{Binding Line}" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

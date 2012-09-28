@@ -9,20 +9,24 @@ using GitSharp.Core.Util;
 
 namespace TimelapsGit
 {
-    public class MainViewModel: ViewModel
+    public class MainViewModel: ViewModel, ITimeSpanContainer
     {
         private readonly Repository _repository;
         private ObservableCollection<LineAndCommit> _lines = new ObservableCollection<LineAndCommit>();
         private List<CommitViewModel> _commits = new List<CommitViewModel>();
         private int _selectedCommitNumber = 1;
+        private readonly DateTime _now;
 
         private string _path;
+        private readonly AgeGradient _ageGradient;
 
-        public MainViewModel(Repository repository)
+        public MainViewModel(Repository repository, DateTime now)
         {
             _repository = repository;
+            _now = now;
+            _ageGradient = new AgeGradient(this);
         }
-        
+
         public List<CommitViewModel> Commits
         {
             get { return _commits; }
@@ -109,7 +113,7 @@ namespace TimelapsGit
                         {
                             if (lines[n] == null)
                             {
-                                lines[n] = new LineAndCommit(GetLine(commit.Encoding, curText, n), prevCommit);
+                                lines[n] = CreateViewModel(GetLine(commit.Encoding, curText, n), prevCommit);
                                 emptyLines--;
                             }
                         }
@@ -122,8 +126,13 @@ namespace TimelapsGit
             }
             for (int n = 0; n < lines.Length; n++)
                 if (lines[n] == null)
-                    lines[n] = new LineAndCommit(GetLine(commit.Encoding, curText, n), prevAncestor);
+                    lines[n] = CreateViewModel(GetLine(commit.Encoding, curText, n), prevAncestor);
             return lines;
+        }
+
+        private LineAndCommit CreateViewModel(string getLine, Commit commit)
+        {
+            return new LineAndCommit(getLine, commit, _ageGradient);
         }
 
         public ObservableCollection<LineAndCommit> Lines
@@ -135,17 +144,14 @@ namespace TimelapsGit
                 RaisePropertyChanged("Lines");
             }
         }
+
+        public DateTime Start { get { return _commits.Last().Commit.CommitDate.LocalDateTime; } }
+        public DateTime Stop { get { return _commits.First().Commit.CommitDate.LocalDateTime; } }
     }
 
-    public class CommitViewModel: ViewModel
+    public interface ITimeSpanContainer
     {
-        private readonly Commit _commit;
-
-        public CommitViewModel(Commit commit)
-        {
-            _commit = commit;
-        }
-
-        public Commit Commit { get { return _commit; } }
+        DateTime Start { get; }
+        DateTime Stop { get; }
     }
 }
