@@ -15,9 +15,8 @@
 
             <DataTemplate DataType="{x:Type local:MainViewModel}">
                 <DockPanel>
-                    <StackPanel DockPanel.Dock="Top">
+                    <StackPanel DockPanel.Dock="Top" Height="100">
                         <TextBlock Text="{Binding CurrentMessage}" />
-                        <TextBlock Text="{Binding CurrentDate}" />
                     </StackPanel>
 
                     <StackPanel DockPanel.Dock="Bottom">
