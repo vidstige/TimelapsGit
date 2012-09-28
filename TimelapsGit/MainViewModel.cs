@@ -34,6 +34,9 @@ namespace TimelapsGit
             set
             {
                 _selectedCommitNumber = value;
+
+                Lines = new ObservableCollection<LineAndCommit>(Blame(SelectedCommit, _path));
+
                 RaisePropertyChanged("SelectedCommitNumber");
                 RaisePropertyChanged("CurrentMessage");
             }
@@ -41,9 +44,14 @@ namespace TimelapsGit
 
         public string CurrentMessage
         {
-            get { return _commits[_selectedCommitNumber-1].Commit.Message; }
+            get { return SelectedCommit.Message; }
         }
-        
+
+        private Commit SelectedCommit
+        {
+            get { return _commits[_selectedCommitNumber - 1].Commit; }
+        }
+
         public string File
         {
             set
@@ -51,10 +59,9 @@ namespace TimelapsGit
                 _path = value;
 
                 _commits = _repository.CurrentBranch.CurrentCommit.Ancestors.Select(c => new CommitViewModel(c)).ToList();
-
-                Lines = new ObservableCollection<LineAndCommit>(Blame(_repository.CurrentBranch.CurrentCommit, _path));
-
                 RaisePropertyChanged("Commits");
+
+                SelectedCommitNumber = 1;
             }
             get { return _path; }
         }
@@ -74,6 +81,7 @@ namespace TimelapsGit
             var leaf = commit.Tree[path] as Leaf;
             if (leaf == null)
                 throw new ArgumentException("The given path does not exist in this commit: " + path);
+
             byte[] data = leaf.RawData;
             IntList lineMap = RawParseUtils.lineMap(data, 0, data.Length);
             var lines = new LineAndCommit[lineMap.size()];
