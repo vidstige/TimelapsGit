@@ -2,30 +2,45 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:TimelapsGit"
         Title="MainWindow" Height="350" Width="525">
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Top">
-            <TextBlock Text="{Binding CurrentMessage}" />
-            <TextBlock Text="{Binding CurrentDate}" />
-        </StackPanel>
-        
-        <StackPanel DockPanel.Dock="Bottom">
-            <Slider Minimum="1" Maximum="{Binding Commits.Count}" Value="{Binding SelectedCommitNumber}"></Slider>
-        </StackPanel>
-        
-        <ListBox x:Name="_lines" ItemsSource="{Binding Lines}" HorizontalContentAlignment="Stretch">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="local:LineAndCommit">
-                    <DockPanel Background="{Binding BackgroundColor}">
-                        <StackPanel DockPanel.Dock="Left" Width="Auto" Orientation="Vertical">
-                            <TextBlock FontSize="10" Text="{Binding Commit.Author.Name}" />
-                            <TextBlock FontSize="10" Text="{Binding Commit.CommitDate.LocalDateTime}" />
-                        </StackPanel>
-                        
-                        <TextBlock FontSize="18" Text="{Binding Line}"/>
-                        
-                    </DockPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </DockPanel>
+    <ContentControl Content="{Binding Path=., TargetNullValue={x:Static local:Empty.Value}}">
+        <ContentControl.Resources>
+            <DataTemplate DataType="{x:Type local:Empty}">
+                <Grid
+                        Drop="DropList_Drop" 
+                        DragEnter="DropList_DragEnter" 
+                        AllowDrop="True">
+                    <TextBlock>Drop file inside git-repo here</TextBlock>
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type local:MainViewModel}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Text="{Binding CurrentMessage}" />
+                        <TextBlock Text="{Binding CurrentDate}" />
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <Slider Minimum="1" Maximum="{Binding Commits.Count}" Value="{Binding SelectedCommitNumber}"></Slider>
+                    </StackPanel>
+
+                    <ListBox x:Name="_lines" ItemsSource="{Binding Lines}" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="local:LineAndCommit">
+                                <DockPanel Background="{Binding BackgroundColor}">
+                                    <StackPanel DockPanel.Dock="Left" Width="Auto" Orientation="Vertical">
+                                        <TextBlock FontSize="10" Text="{Binding Commit.Author.Name}" />
+                                        <TextBlock FontSize="10" Text="{Binding Commit.CommitDate.LocalDateTime}" />
+                                    </StackPanel>
+
+                                    <TextBlock FontSize="18" Text="{Binding Line}"/>
+
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </DataTemplate>
+        </ContentControl.Resources>
+    </ContentControl>
 </Window>
