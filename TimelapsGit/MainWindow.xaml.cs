@@ -31,11 +31,24 @@ namespace TimelapsGit
 
         private void DropList_Drop(object sender, DragEventArgs e)
         {
-            string[] droppedFilenames = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-
-            var path = droppedFilenames.First();
-            var repo = GetRepository(new DirectoryInfo(Path.GetDirectoryName(path)));
-            DataContext = new MainViewModel(repo, DateTime.Now) { File = Relativize(repo, path) };
+            try
+            {
+                var droppedFilenames = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+                if (droppedFilenames != null)
+                {
+                    var path = droppedFilenames.First();
+                    var repo = GetRepository(new DirectoryInfo(Path.GetDirectoryName(path)));
+                    DataContext = new MainViewModel(repo, DateTime.Now) {File = Relativize(repo, path)};
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("Could not open the file: " + ex.Message);
+            }
+            catch (NotInsideGitRepository ex)
+            {
+                MessageBox.Show("Could not open the file: " + ex.Message);
+            }
         }
 
         private string Relativize(Repository repo, string path)
@@ -49,8 +62,17 @@ namespace TimelapsGit
 
         private Repository GetRepository(DirectoryInfo folder)
         {
+            if (folder.Root.Name == folder.Name) throw new NotInsideGitRepository("File is not inside a git-repository");
             if (Repository.IsValid(folder.FullName)) return new Repository(folder.FullName);
             return GetRepository(folder.Parent);
+        }
+    }
+
+    internal class NotInsideGitRepository : Exception
+    {
+        public NotInsideGitRepository(string message): base(message)
+        {
+            
         }
     }
 }

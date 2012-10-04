@@ -5,11 +5,8 @@
     <ContentControl Content="{Binding Path=., TargetNullValue={x:Static local:Empty.Value}}">
         <ContentControl.Resources>
             <DataTemplate DataType="{x:Type local:Empty}">
-                <Grid
-                        Drop="DropList_Drop" 
-                        DragEnter="DropList_DragEnter" 
-                        AllowDrop="True">
-                    <TextBlock>Drop file inside git-repo here</TextBlock>
+                <Grid Drop="DropList_Drop" DragEnter="DropList_DragEnter" AllowDrop="True">
+                    <TextBlock FontSize="32">Drop file inside git-repo here</TextBlock>
                 </Grid>
             </DataTemplate>
 
