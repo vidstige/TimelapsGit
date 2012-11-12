@@ -23,14 +23,14 @@
                     <ListBox x:Name="_lines" ItemsSource="{Binding Lines}" HorizontalContentAlignment="Stretch">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="local:LineAndCommit">
-                                <DockPanel Background="{Binding BackgroundColor}">
+                                <DockPanel>
                                     <StackPanel DockPanel.Dock="Left" Width="Auto" Orientation="Vertical">
                                         <TextBlock FontSize="10" Text="{Binding Commit.Author.Name}" />
                                         <TextBlock FontSize="10" Text="{Binding Commit.CommitDate.LocalDateTime}" />
                                     </StackPanel>
 
-                                    <TextBlock FontSize="18" Text="{Binding Line}"/>
-
+                                    <TextBlock FontSize="18" Text="{Binding Line}" Foreground="{Binding BackgroundColor}"/>
+                                    
                                 </DockPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

@@ -18,7 +18,7 @@ namespace TimelapsGit
             var maxAge = _timeSpanContainer.Stop.Subtract(_timeSpanContainer.Start);
             double relativeAge = age.TotalHours / maxAge.TotalHours;
 
-            return new Color { A = 255, R = (byte)(relativeAge * 255), G = (byte)(relativeAge * 255), B = 255 };
+            return new Color { A = 255, R = (byte)(155 - relativeAge * 100), G = (byte)(155 - relativeAge * 100), B = 255 };
         }
     }
 }
