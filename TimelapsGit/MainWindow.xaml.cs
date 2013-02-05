@@ -25,7 +25,6 @@ namespace TimelapsGit
             {
                 e.Effects = DragDropEffects.Link;
             }
-
             e.Effects = DragDropEffects.None;
         }
 

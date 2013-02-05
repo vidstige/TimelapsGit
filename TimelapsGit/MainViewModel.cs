@@ -6,6 +6,7 @@ using System.Text;
 using GitSharp;
 using GitSharp.Core.Diff;
 using GitSharp.Core.Util;
+using System.Windows.Media;
 
 namespace TimelapsGit
 {
@@ -44,6 +45,21 @@ namespace TimelapsGit
                 RaisePropertyChanged("SelectedCommitNumber");
                 RaisePropertyChanged("CurrentMessage");
             }
+        }
+
+        public DoubleCollection Ticks
+        {
+            get
+            {
+                var tmp = _commits.Select(RelativeAge);
+                return new DoubleCollection(tmp);
+            }
+        }
+
+        private double RelativeAge(CommitViewModel commitViewModel)
+        {
+            var dateTime = commitViewModel.Commit.CommitDate;
+            return this.RelativeAgeOf(dateTime.LocalDateTime);
         }
 
         public string CurrentMessage
@@ -147,11 +163,5 @@ namespace TimelapsGit
 
         public DateTime Start { get { return _commits.Last().Commit.CommitDate.LocalDateTime; } }
         public DateTime Stop { get { return _commits.First().Commit.CommitDate.LocalDateTime; } }
-    }
-
-    public interface ITimeSpanContainer
-    {
-        DateTime Start { get; }
-        DateTime Stop { get; }
     }
 }

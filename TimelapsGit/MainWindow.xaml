@@ -16,8 +16,9 @@
                         <TextBlock Text="{Binding CurrentMessage}" />
                     </StackPanel>
 
+                    <!-- slider -->
                     <StackPanel DockPanel.Dock="Bottom">
-                        <Slider Minimum="1" Maximum="{Binding Commits.Count}" Value="{Binding SelectedCommitNumber}"></Slider>
+                        <Slider Ticks="{Binding Ticks}" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding SelectedTick}"></Slider> 
                     </StackPanel>
 
                     <ListBox x:Name="_lines" ItemsSource="{Binding Lines}" HorizontalContentAlignment="Stretch">
