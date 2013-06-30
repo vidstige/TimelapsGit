@@ -16,15 +16,13 @@ namespace TimelapsGit
         private ObservableCollection<LineAndCommit> _lines = new ObservableCollection<LineAndCommit>();
         private List<CommitViewModel> _commits = new List<CommitViewModel>();
         private int _selectedCommitNumber = 1;
-        private readonly DateTime _now;
 
         private string _path;
         private readonly AgeGradient _ageGradient;
 
-        public MainViewModel(Repository repository, DateTime now)
+        public MainViewModel(Repository repository)
         {
             _repository = repository;
-            _now = now;
             _ageGradient = new AgeGradient(this);
         }
 
@@ -79,26 +77,32 @@ namespace TimelapsGit
 
         public string CurrentMessage
         {
-            get { return SelectedCommit.Message; }
+            get            
+            {
+                var selected = SelectedCommit;
+                if (selected == null) return "Loading...";
+                return selected.Message;
+            }
         }
 
         private Commit SelectedCommit
         {
-            get { return _commits[_selectedCommitNumber - 1].Commit; }
+            get
+            {
+                if (_selectedCommitNumber >= _commits.Count) return null;
+                return _commits[_selectedCommitNumber - 1].Commit;
+            }
         }
 
-        public string File
+        public void Load(string file)
         {
-            set
-            {
-                _path = value.Replace('\\', '/');
+            _path = file.Replace('\\', '/');
 
-                _commits = _repository.CurrentBranch.CurrentCommit.Ancestors.Where(c => c.Changes.Any(change => change.Path == _path)).Select(c => new CommitViewModel(c)).ToList();
-                RaisePropertyChanged("Commits");
+            _commits = _repository.CurrentBranch.CurrentCommit.Ancestors.Where(c => c.Changes.Any(change => change.Path == _path)).Select(c => new CommitViewModel(c)).ToList();
+            RaisePropertyChanged("Commits");
 
-                SelectedCommitNumber = 1;
-            }
-            get { return _path; }
+            SelectedCommitNumber = 1;
+            RaisePropertyChanged("Ticks");
         }
 
         // TODO: This method already exists in the Text class...

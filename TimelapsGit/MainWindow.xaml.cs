@@ -3,6 +3,7 @@ using System.Windows;
 using GitSharp;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TimelapsGit
 {
@@ -11,12 +12,10 @@ namespace TimelapsGit
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _viewModel;
         public MainWindow()
         {
             InitializeComponent();
-
-            //var repo = new Repository(@"F:\src\eliteprospects");
-            //DataContext = new MainViewModel(repo, DateTime.Now) { File = @"AndroidManifest.xml" };
         }
 
         private void DropList_DragEnter(object sender, DragEventArgs e)
@@ -37,14 +36,12 @@ namespace TimelapsGit
                 {
                     var path = droppedFilenames.First();
                     var repo = GetRepository(new DirectoryInfo(Path.GetDirectoryName(path)));
-                    DataContext = new MainViewModel(repo, DateTime.Now) {File = Relativize(repo, path)};
+                    _viewModel = new MainViewModel(repo);
+                    DataContext = _viewModel;
+                    new Task(() => _viewModel.Load(Relativize(repo, path))).Start();
                 }
             }
             catch (IOException ex)
-            {
-                MessageBox.Show("Could not open the file: " + ex.Message);
-            }
-            catch (NotInsideGitRepository ex)
             {
                 MessageBox.Show("Could not open the file: " + ex.Message);
             }
