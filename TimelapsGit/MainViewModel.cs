@@ -62,6 +62,21 @@ namespace TimelapsGit
             return this.RelativeAgeOf(dateTime.LocalDateTime);
         }
 
+        private double _selectedTick;
+        public double SelectedTick
+        {
+            get { return _selectedTick; }
+            set
+            {
+                _selectedTick = value;
+                RaisePropertyChanged("SelectedTick");
+
+                var commit = _commits.Single(cm => RelativeAge(cm) == value);
+                SelectedCommitNumber = _commits.IndexOf(commit);
+            }
+
+        }
+
         public string CurrentMessage
         {
             get { return SelectedCommit.Message; }
