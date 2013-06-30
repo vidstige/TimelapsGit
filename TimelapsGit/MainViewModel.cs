@@ -15,7 +15,7 @@ namespace TimelapsGit
         private readonly Repository _repository;
         private ObservableCollection<LineAndCommit> _lines = new ObservableCollection<LineAndCommit>();
         private List<CommitViewModel> _commits = new List<CommitViewModel>();
-        private int _selectedCommitNumber = 1;
+        private int _selectedCommitNumber = 0;
 
         private string _path;
         private readonly AgeGradient _ageGradient;
@@ -66,11 +66,14 @@ namespace TimelapsGit
             get { return _selectedTick; }
             set
             {
-                _selectedTick = value;
-                RaisePropertyChanged("SelectedTick");
+                if (Ticks.Contains(value))
+                {
+                    _selectedTick = value;
+                    RaisePropertyChanged("SelectedTick");
 
-                var commit = _commits.Single(cm => RelativeAge(cm) == value);
-                SelectedCommitNumber = _commits.IndexOf(commit);
+                    var commit = _commits.Single(cm => RelativeAge(cm) == value);
+                    SelectedCommitNumber = _commits.IndexOf(commit);
+                }
             }
 
         }
@@ -90,7 +93,7 @@ namespace TimelapsGit
             get
             {
                 if (_selectedCommitNumber >= _commits.Count) return null;
-                return _commits[_selectedCommitNumber - 1].Commit;
+                return _commits[_selectedCommitNumber].Commit;
             }
         }
 

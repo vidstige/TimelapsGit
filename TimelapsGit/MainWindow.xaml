@@ -18,7 +18,10 @@
 
                     <!-- slider -->
                     <StackPanel DockPanel.Dock="Bottom">
-                        <Slider Ticks="{Binding Ticks}" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding SelectedTick}"></Slider> 
+                        <Slider
+                            Ticks="{Binding Ticks}" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding SelectedTick}"
+                            Minimum="0"
+                            Maximum="1"/>
                     </StackPanel>
 
                     <ListBox x:Name="_lines" ItemsSource="{Binding Lines}" HorizontalContentAlignment="Stretch">
